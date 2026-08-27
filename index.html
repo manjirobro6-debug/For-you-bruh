@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd5e7, #fff4f8);
+}
+
+.card {
+  width: 90%;
+  max-width: 430px;
+  padding: 28px 22px;
+  text-align: center;
+  background: rgba(255,255,255,.96);
+  border-radius: 30px;
+  box-shadow: 0 20px 55px rgba(255,70,130,.25);
+  animation: appear .6s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.photo {
+  width: 230px;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 25px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.15);
+  animation: photoIn .7s ease;
+}
+
+@keyframes photoIn {
+  from {
+    opacity: 0;
+    transform: scale(.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+h1 {
+  color: #ff4f91;
+  font-size: 29px;
+  margin: 20px 0 10px;
+}
+
+p {
+  color: #777;
+  font-size: 18px;
+}
+
+.buttons {
+  position: relative;
+  height: 100px;
+  margin-top: 25px;
+}
+
+button {
+  border: none;
+  border-radius: 50px;
+  padding: 14px 27px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#yes {
+  background: #ff4f91;
+  color: white;
+  box-shadow: 0 8px 20px rgba(255,79,145,.3);
+  transition: transform .2s;
+}
+
+#yes:hover {
+  transform: scale(1.08);
+}
+
+#no {
+  background: #eee;
+  color: #555;
+  position: absolute;
+  left: 55%;
+  top: 0;
+  transition:
+    left .35s ease,
+    top .35s ease,
+    transform .3s ease,
+    opacity .4s ease;
+}
+
+.final {
+  animation: finalPop .8s ease;
+}
+
+@keyframes finalPop {
+  0% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.final-photo {
+  width: 240px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(255,70,130,.25);
+}
+
+.float {
+  position: fixed;
+  bottom: -40px;
+  pointer-events: none;
+  animation: floatUp 4s linear forwards;
+  font-size: 25px;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<script>
+
+const card = document.getElementById("card");
+
+const screens = [
+  {
+    text: "Will you be my girlfriend? ❤️",
+    picture: "pic1.jpg",
+    no: "NO 😄"
+  },
+  {
+    text: "Think again 😃",
+    picture: "pic2.jpg",
+    no: "NO 😃"
+  },
+  {
+    text: "Please be my girlfriend 😭",
+    picture: "pic3.jpg",
+    no: "NO 😭"
+  },
+  {
+    text: "Please say YES 🥺",
+    picture: "pic4.jpg",
+    no: "NO 😭"
+  }
+];
+
+let currentScreen = 0;
+let finalNoClicks = 0;
+
+function showScreen() {
+
+  const data = screens[currentScreen];
+
+  card.innerHTML = `
+    <img class="photo" src="${data.picture}" alt="Picture">
+
+    <h1>${data.text}</h1>
+
+    <div class="buttons">
+      <button id="yes">YES ❤️</button>
+      <button id="no">${data.no}</button>
+    </div>
+  `;
+
+  document.getElementById("yes").onclick = showYes;
+
+  document.getElementById("no").onclick = noPressed;
+}
+
+function noPressed() {
+
+  // Move to the next question
+  if (currentScreen < 3) {
+    currentScreen++;
+    showScreen();
+    return;
+  }
+
+  // Final NO sequence
+  finalNoClicks++;
+
+  const no = document.getElementById("no");
+  const area = document.querySelector(".buttons");
+
+  if (finalNoClicks === 1) {
+
+    no.innerText = "Don't do this 😭";
+    moveNo(no, area);
+
+  } else if (finalNoClicks === 2) {
+
+    no.innerText = "Please don't 🥺";
+    moveNo(no, area);
+
+  } else if (finalNoClicks === 3) {
+
+    no.innerText = "Please stop 😭";
+    moveNo(no, area);
+
+  } else if (finalNoClicks === 4) {
+
+    no.innerText =
+      "Pleassssss stop, I'm gonna disappear 😭";
+
+    moveNo(no, area);
+
+  } else if (finalNoClicks === 5) {
+
+    no.innerText = "Byeeee 👋";
+
+    no.style.transform =
+      "scale(0) rotate(720deg)";
+
+    no.style.opacity = "0";
+
+    setTimeout(() => {
+      no.remove();
+    }, 500);
+  }
+}
+
+function moveNo(button, area) {
+
+  const maxX =
+    Math.max(area.clientWidth - button.offsetWidth, 0);
+
+  const maxY =
+    Math.max(area.clientHeight - button.offsetHeight, 0);
+
+  button.style.left =
+    Math.random() * maxX + "px";
+
+  button.style.top =
+    Math.random() * maxY + "px";
+
+  button.style.transform =
+    `rotate(${Math.random() * 25 - 12}deg)`;
+}
+
+function showYes() {
+
+  card.innerHTML = `
+    <div class="final">
+
+      <img
+        class="final-photo"
+        src="yes.jpg"
+        alt="Our picture"
+      >
+
+      <h1>I knew it! 😂❤️</h1>
+
+      <p style="font-size:22px;color:#ff4f91;">
+        You love me a lot! 💕
+      </p>
+
+      <p>
+        I literally hate NO 😂
+      </p>
+
+      <div style="font-size:60px;">
+        💃 🕺
+      </div>
+
+    </div>
+  `;
+
+  for (let i = 0; i < 30; i++) {
+    setTimeout(createFloat, i * 80);
+  }
+}
+
+function createFloat() {
+
+  const item = document.createElement("div");
+
+  item.className = "float";
+
+  const symbols = ["❤️", "💕", "💖", "✨"];
+
+  item.innerText =
+    symbols[Math.floor(Math.random() * symbols.length)];
+
+  item.style.left =
+    Math.random() * 100 + "vw";
+
+  document.body.appendChild(item);
+
+  setTimeout(() => {
+    item.remove();
+  }, 4000);
+}
+
+setInterval(createFloat, 1000);
+
+showScreen();
+
+</script>
+
+</body>
+  </html>
